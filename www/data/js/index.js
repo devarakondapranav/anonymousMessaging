@@ -847,7 +847,7 @@ function insAndUpdate()
 		}
 	}
 
-	alert(getTimestamp());
+	//alert(getTimestamp());
 }
 function openAnonIn()
 {
