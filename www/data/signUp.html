@@ -1,0 +1,24 @@
+<html>
+<head>
+	<title></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="https://www.gstatic.com/firebasejs/4.11.0/firebase.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/index.css">
+</head>
+<body style="background-color: black;">
+	<div id = "loginForm" class="center">
+		<div id = "child">
+			<div id = "heading" style="background-color: grey;">
+			<h1 style="font-family: verdana;color:#FFDAB9 ">Sign Up</h1></div><br><br><br>
+			Display Name<br><input type="text" name="" id = "displayName"><br><br>
+			Roll No<br><input type="number" name="" id ="roll"><br><br>
+			Email<br> <input type="email" id="email" name="">
+			<br><br>
+			Password<br> <input type="password" id="pass" name=""><br><br>
+			<input type="button" value="Sign Up" onclick="signUp()" class="button button3" style="background-color: #FFDAB9;border: none;color: black;padding: 10px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;margin: 4px 2px;cursor: pointer;" ><br><br><br><br><br><br><br><br>
+			<div style="background-color: grey;height: 30px; padding: 5px;">Already registered? Click <a href="index.html">here</a> to log in!!.</div>
+		</div>
+	</div>
+	<script src = "js/signupPage.js"></script>
+</body>
+</html>
