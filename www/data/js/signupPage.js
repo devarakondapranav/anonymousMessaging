@@ -19,10 +19,10 @@ function signUp()
 	userpass = document.getElementById('pass');
 	userDisplayName = document.getElementById("displayName").value;
 	userRoll = String(document.getElementById("roll")).value;
-	alert("Sign Up process started");
-	if(username.value.length > 0 && userpass.value.length && userDisplayName.length>0)
+	//alert("Sign Up process started");
+	if(username.value.length > 0 && userpass.value.length>=6 && userDisplayName.length>4 && String(userRoll).length == 12)
 	{
-		alert("Signing up");	
+		//alert("Signing up");	
 		console.log("Event fired");
 		const email = username.value;
 		const pass = userpass.value;
@@ -35,7 +35,18 @@ function signUp()
 	}
 	else
 	{
-		alert("Dont leave input fields blank");
+		if(userpass.value.length < 6)
+		{
+			alert("Password should be atleast 6 characters long.");
+
+		}
+		if(String(userRoll).length != 12)
+			alert("Enter a valid roll no");
+		if(userDisplayName.length <=4 )
+			alert("Display Name should be atleat 5 characters long");
+		if(username.length == 0)
+			alert("Please enter a valid email");
+
 	}
 }
 firebase.auth().onAuthStateChanged(firebaseUser=>{
@@ -53,9 +64,7 @@ firebase.auth().onAuthStateChanged(firebaseUser=>{
 			userList[firebaseUser.uid] = newObj;
 			dbref.set(userList);
 			console.log("object added to DB...opening chats");
-			//window.open('mainIndex.html');
-
-
+			window.open('mainIndex.html');
 
 		})
 
