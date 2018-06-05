@@ -59,7 +59,7 @@ body {
   font-weight:700;
   text-decoration:none;
   position:absolute;top:4%;
-  left:10%;margin-left:-50px;
+  left:13%;margin-left:-50px;
   z-index:200;
 }
 #welcomeMSG:hover{opacity:1;}
