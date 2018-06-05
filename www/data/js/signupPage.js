@@ -18,7 +18,10 @@ function signUp()
 	username = document.getElementById('email');
 	userpass = document.getElementById('pass');
 	userDisplayName = document.getElementById("displayName").value;
-	userRoll = String(document.getElementById("roll")).value;
+	userRoll = String(document.getElementById("roll").value)
+
+
+	;
 	//alert("Sign Up process started");
 	if(username.value.length > 0 && userpass.value.length>=6 && userDisplayName.length>4 && String(userRoll).length == 12)
 	{
@@ -29,9 +32,9 @@ function signUp()
 		const auth= firebase.auth();
 
 		const promise = auth.createUserWithEmailAndPassword(email, pass);
-		promise.catch(e=>alert("Incorrect credentials...try again"));
+		promise.catch(e=>alert("Some problem :( please try again..."));
 
-		alert("Sign Up successful...");
+		//alert("Sign Up successful...");
 	}
 	else
 	{
@@ -41,7 +44,10 @@ function signUp()
 
 		}
 		if(String(userRoll).length != 12)
+		{
+			console.log(userRoll);
 			alert("Enter a valid roll no");
+		}
 		if(userDisplayName.length <=4 )
 			alert("Display Name should be atleat 5 characters long");
 		if(username.length == 0)
@@ -53,6 +59,7 @@ firebase.auth().onAuthStateChanged(firebaseUser=>{
 	if(firebaseUser)
 	{
 		console.log(firebaseUser);
+		alert("Sign Up successful");
 		var dbref = firebase.database().ref().child("users");
 		var userList = null;
 		dbref.once("value", function(snapshot)
@@ -64,7 +71,8 @@ firebase.auth().onAuthStateChanged(firebaseUser=>{
 			userList[firebaseUser.uid] = newObj;
 			dbref.set(userList);
 			console.log("object added to DB...opening chats");
-			window.open('mainIndex.html');
+			//window.open('mainIndex.html');
+			alert("You can now log in with your email and password");
 
 		})
 

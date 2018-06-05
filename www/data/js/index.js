@@ -358,7 +358,7 @@ $("#friends1").each(function()
 					messages = messages.split("***");
 					for(var i=0;i<messages.length-2;i++)
 					{
-						if(messages[i][0] == "0")
+						if(messages[i][0] == "0" && messages[i].split(":")[2]!="No messages have been sent!")
 						{
 
 							var div = document.createElement("div");
@@ -366,7 +366,7 @@ $("#friends1").each(function()
 							div.innerHTML = "<img src = 'js/s.jpg'><div class = 'bubble'>"+messages[i].split(":")[2] + " <div class = 'corner'></div><span>" + messages[i].split(":")[1] + "</span></div>";
 							document.getElementById("chat-messages").appendChild(div);
 						}
-						else
+						else if(messages[i][0] == "1" && messages[i].split(":")[2]!="No messages have been sent!")
 						{
 							var div = document.createElement("div");
 							div.className = "message";
@@ -530,7 +530,7 @@ $("#friends1").each(function()
 						messages = messages.split("***");
 						for(var i=0;i<messages.length-2;i++)
 						{
-							if(messages[i][0] == "1")
+							if(messages[i][0] == "1" && messages[i].split(":")[2] != "No messages have been sent!")
 							{
 
 								var div = document.createElement("div");
@@ -538,7 +538,7 @@ $("#friends1").each(function()
 								div.innerHTML = "<img src = 'js/s.jpg'><div class = 'bubble'>"+messages[i].split(":")[2] + " <div class = 'corner'></div><span> " +messages[i].split(":")[1] + "</span></div>";
 								document.getElementById("chat-messages").appendChild(div);
 							}
-							else
+							else if(messages[i][0] == "0" && messages[i].split(":")[2] != "No messages have been sent!")
 							{
 								var div = document.createElement("div");
 								div.className = "message";
@@ -564,7 +564,7 @@ $("#friends1").each(function()
 								div.innerHTML = "<img src = 'js/s.jpg'><div class = 'bubble'>"+latestMes.split(":")[1] + " <div class = 'corner'></div><span>" + getTimestamp() + "</span></div>";
 								document.getElementById("chat-messages").appendChild(div);
 							}
-							else if(latestMes == "9905")
+							else if(latestMes.split(":")[1] == "9905")
 							{
 
 							}
@@ -601,7 +601,7 @@ $("#friends1").each(function()
 						mesRef.set("0:1830:No messages have been sent!***");
 						tempref1 = firebase.database().ref().child("users").child(useruid).child("incoming").child(destination+"temp");
 						tempref1.set("sknv:9905");
-						alert("Destination is "+ destination);
+						alert("Your chat will appear as " + destination + " to " + name) ;
 						window.anonDestination = mesRef;
 						window.anonDestinationTemp = tempref1;
 						mesRef.once("value", function(snapshot)
@@ -612,7 +612,7 @@ $("#friends1").each(function()
 						messages = messages.split("***");
 						for(var i=0;i<messages.length-2;i++)
 						{
-							if(messages[i][0] == "1")
+							if(messages[i][0] == "1" && messages[i].split(":")[2]!="No messages have been sent!")
 							{
 
 								var div = document.createElement("div");
@@ -620,7 +620,8 @@ $("#friends1").each(function()
 								div.innerHTML = "<img src = 'js/s.jpg'><div class = 'bubble'>"+messages[i].split(":")[2] + " <div class = 'corner'></div><span>"+ messages[i].split(":")[1] + "</span></div>";
 								document.getElementById("chat-messages").appendChild(div);
 							}
-							else
+							else if(messages[i][0] == "0" && messages[i].split(":")[2]!="No messages have been sent!")
+
 							{
 								var div = document.createElement("div");
 								div.className = "message";
@@ -646,7 +647,7 @@ $("#friends1").each(function()
 								div.innerHTML = "<img src = 'js/s.jpg'><div class = 'bubble'>"+latestMes.split(":")[1] + " <div class = 'corner'></div><span>" + getTimestamp() + "</span></div>";
 								document.getElementById("chat-messages").appendChild(div);
 							}
-							else if(latestMes == "9905")
+							else if(latestMes.split(":")[1] == "9905")
 							{
 
 							}
