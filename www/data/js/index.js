@@ -18,6 +18,7 @@ $(document).ready(function(){
 	//alert("SAN....");
 	dbref.once("value", function(snapshot)
 	{
+		var listOfUsers = [];
 		var users = snapshot.val();
 		uid = user.uid;
 
@@ -40,6 +41,13 @@ $(document).ready(function(){
 			document.getElementById("friends").appendChild(div);
 			//document.getElementById("friends2").appendChild(div);
 			//document.getElementById("friends2").appendChild(div);
+			listOfUsers.push(username);
+
+
+
+			
+			
+		
 
 			if(window.newNormal == 0)
 			{
@@ -50,6 +58,9 @@ $(document).ready(function(){
 
 
 		}
+		console.log("function called");
+		setNotifyListeners(source, listOfUsers);
+
 		/*
 		var anonOuref = firebase.database().ref().child("users").child(uid).child("incoming");
 		anonOuref.on("value", function(snapshot)
@@ -771,46 +782,53 @@ function insAndUpdate()
 		document.getElementById("message_to_be_sent").value = "";
 		if(document.getElementById("chatmode").innerHTML == "normal")
 		{
-		var tempref = null;
-		
-		var destination = document.querySelector("p.animate").innerHTML;
-		var div = document.createElement("div");
-		
-		var chatLogObject = document.getElementById("chat-messages");
-		chatLogObject.scrollTop = chatLogObject.scrollHeight;
-		console.log(source + "to " + destination );
-		if(source > destination)
-		{
-			tempref = firebase.database().ref().child(source + "To" + destination + "temp");
-			tempref.set(uid + ":" + message_to_be_sent);
+			var tempref = null;
+			
+			var destination = document.querySelector("p.animate").innerHTML;
+			var div = document.createElement("div");
+			
+			var chatLogObject = document.getElementById("chat-messages");
+			chatLogObject.scrollTop = chatLogObject.scrollHeight;
+			console.log(source + "to " + destination );
+			if(source > destination)
+			{
+				tempref = firebase.database().ref().child(source + "To" + destination + "temp");
+				tempref.set(uid + ":" + message_to_be_sent);
 
-		}
-		else
-		{
-			tempref = firebase.database().ref().child(destination + "To" + source + "temp");
-			tempref.set(uid + ":" + message_to_be_sent);
-		}
-		var fref = firebase.database().ref().child(source + "To" + destination);
-		fref.once("value", function(snapshot)
-		{
-			var oldMessage = snapshot.val();
-			if(oldMessage!=null)
-				oldMessage+= "***0:"+getTimestamp()+ ":" + message_to_be_sent;
+			}
 			else
-				oldMessage = "***0:"+getTimestamp()+ ":" + message_to_be_sent;
-			fref.set(oldMessage);
-		})
+			{
+				tempref = firebase.database().ref().child(destination + "To" + source + "temp");
+				tempref.set(uid + ":" + message_to_be_sent);
+			}
+			var fref = firebase.database().ref().child(source + "To" + destination);
+			fref.once("value", function(snapshot)
+			{
+				var oldMessage = snapshot.val();
+				if(oldMessage!=null)
+					oldMessage+= "***0:"+getTimestamp()+ ":" + message_to_be_sent;
+				else
+					oldMessage = "***0:"+getTimestamp()+ ":" + message_to_be_sent;
+				fref.set(oldMessage);
+			})
 
-		var sref = firebase.database().ref().child(destination + "To" + source);
-		sref.once("value", function(snapshot)
-		{
-			var oldMessage =snapshot.val();
-			if(oldMessage!=null)
-				oldMessage+= "***1:"+getTimestamp()+ ":" + message_to_be_sent;
-			else
-				oldMessage = "***1:"+getTimestamp()+ ":" + message_to_be_sent;
-			sref.set(oldMessage);
-		})
+			var sref = firebase.database().ref().child(destination + "To" + source);
+			sref.once("value", function(snapshot)
+			{
+				var oldMessage =snapshot.val();
+				if(oldMessage!=null)
+					oldMessage+= "***1:"+getTimestamp()+ ":" + message_to_be_sent;
+				else
+					oldMessage = "***1:"+getTimestamp()+ ":" + message_to_be_sent;
+				sref.set(oldMessage);
+			})
+			var notify = firebase.database().ref().child(destination+source + "notify");
+			notify.once("value", function(snapshot)
+			{
+				notify.set("notRead*@*" + message_to_be_sent + "*@*" + source);
+				//notify.set("read*@*" + message_to_be_sent + "*@*" + source)
+
+			})
 		}
 		else if(document.getElementById("chatmode").innerHTML == "anonOu")
 		{
@@ -968,3 +986,55 @@ function getTimestamp()
 
 }
 
+function createNoty(message, type) {
+    var html = '<div class="alert alert-' + type + ' alert-dismissable page-alert">';    
+    html += '<button type="button" class="close"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>';
+    html += message;
+    html += '</div>';    
+    $(html).hide().prependTo('#noty-holder').slideDown();
+};
+/*
+$(function(){
+    createNoty('Hi! This is my message', 'info');
+    createNoty('success', 'success');
+    createNoty('warning', 'warning');
+    createNoty('danger', 'danger');
+    createNoty('info', 'info');
+    $('.page-alert .close').click(function(e) {
+        e.preventDefault();
+        $(this).closest('.page-alert').slideUp();
+    });
+});
+*/
+function setNotifyListeners(source, listOfUsers)
+{
+	console.log("function called");
+	for(var i = 0;i < listOfUsers.length;i++)
+	{
+
+			//notify.set("");
+
+			console.log("current user is "+ listOfUsers[i]);
+			firebase.database().ref().child(source + listOfUsers[i] + "notify").on("value", function(snapshot)
+			{
+				var yo = snapshot.val();
+				if(yo!=null)
+				{
+					console.log("Set listener on "  + source+listOfUsers[i] + "notify");
+					yo = yo.split("*@*");
+					if(yo[0] == "notRead")
+					{
+						createNoty("Normal message from " + yo[2] +":- " + yo[1], 'info');
+					    $('.page-alert .close').click(function(e) {
+					        e.preventDefault();
+					        $(this).closest('.page-alert').slideUp();
+					    });
+					    //yo[0] = "read";
+					    //notify.set(" ");
+					}
+
+				}
+			})
+	}
+	console.log("function execution done");
+}
