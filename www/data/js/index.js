@@ -60,6 +60,7 @@ $(document).ready(function(){
 		}
 		console.log("function called");
 		setNotifyListeners(source, listOfUsers);
+		setAnonOuListeners();
 
 		/*
 		var anonOuref = firebase.database().ref().child("users").child(uid).child("incoming");
@@ -97,16 +98,19 @@ $(document).ready(function(){
 		})
 		*/
 		var mainRef = firebase.database().ref().child("users").child(uid).child("incoming");
+		var anonInUsersList = [];
 		mainRef.once("value", function (snapshot) {
 			var incoming_users = snapshot.val();
 			console.log(incoming_users);
 			window.count = incoming_users.length;
+
 			for(var incoming_user in incoming_users)
 			{
-				if(incoming_user.lastIndexOf("temp")== -1)
+				if(incoming_user.lastIndexOf("temp")== -1 && incoming_user.lastIndexOf("Notify") == -1)
 				{
 					var username = incoming_user;
-					var rollNo = "SSS";
+					anonInUsersList.push(username);
+					var rollNo = "";
 					var div = document.createElement("div");
 					div.className = "friend";
 					div.setAttribute("id", username);
@@ -117,6 +121,7 @@ $(document).ready(function(){
 
 			}
 			//alert("Done with AnonIn");
+			setListenersAnonIn(anonInUsersList);
 			
 		})
 			
@@ -131,6 +136,7 @@ $(document).ready(function(){
 		var users = snapshot.val();
 		for (var userLocal in users)
 		{
+			
 			if(userLocal == user.uid)
 			{
 				//source = users[userLocal]["name"];
@@ -425,6 +431,7 @@ $("#friends1").each(function()
 			var tempref1 = firebase.database().ref().child("users").child(uid).child("incoming").child(destination+"temp");
 			window.anonInTempRef = tempref1;
 			window.anonInRef = mesRef;
+			window.foo = firebase.database().ref().child("users").child(uid).child("incoming").child(destination+"OuNotify");
 			var node = null;
 			
 				tempref1.on("value", function(snapshot)
@@ -557,10 +564,14 @@ $("#friends1").each(function()
 					{
 						//alert("already found..");
 						//alert("Destination is "+ destination);
+						window.secretDestination = destination;
 						mesRef = firebase.database().ref().child("users").child(useruid).child("incoming").child(destination);
 						tempref1 = firebase.database().ref().child("users").child(useruid).child("incoming").child(destination+"temp");
 						window.anonDestination = mesRef;
 						window.anonDestinationTemp = tempref1;
+						window.anonDestinationIncNotifyRef = firebase.database().ref().child("users").child(useruid).child("incoming").child(destination + "IncNotify");
+						//window.anonDestinationIncNotifyRef.set("jai sriram");
+						window.anonDestinationOuNotifyRef = firebase.database().ref().child("users").child(useruid).child("incoming").child(destination + "Ounotify")
 
 						mesRef.once("value", function(snapshot)
 					{
@@ -636,6 +647,7 @@ $("#friends1").each(function()
 						deciderRef.set(mappings);
 						//alert("Token added..");
 						destination = "s" + String(nextToken);
+						window.secretDestination = destination;
 						
 						mesRef = firebase.database().ref().child("users").child(useruid).child("incoming").child(destination);
 						mesRef.set("0:1830:No messages have been sent!***");
@@ -644,6 +656,7 @@ $("#friends1").each(function()
 						alert("Your chat will appear as " + destination + " to " + name) ;
 						window.anonDestination = mesRef;
 						window.anonDestinationTemp = tempref1;
+						window.anonDestinationIncNotifyRef = firebase.database().ref().child("users").child(useruid).child("incoming").child(destination + "IncNotify");
 						mesRef.once("value", function(snapshot)
 						{
 					//alert("jai");
@@ -874,6 +887,7 @@ function insAndUpdate()
 					old_messages = "1:"+getTimestamp() + ":" + message_to_be_sent+"***";
 				anonRef.set(old_messages);
 			})
+			window.anonDestinationIncNotifyRef.set("notRead*@*" + message_to_be_sent + "*@*" + window.secretDestination );
 			//alert("Done...");
 
 
@@ -892,6 +906,7 @@ function insAndUpdate()
 
 			})
 			//alert("Done sending in AnonIn");
+			window.foo.set("notRead*@*" + message_to_be_sent + "*@*" + source);
 		}
 	}
 
@@ -1071,4 +1086,96 @@ function setNotifyListeners(source, listOfUsers)
 			})
 	}
 	console.log("function execution done");
+}
+
+function setListenersAnonIn(anonInUsersList)
+{
+	console.log(anonInUsersList);
+	for(var x in anonInUsersList)
+	{
+		console.log("Setting anonIn listener for " + anonInUsersList[x]);
+		firebase.database().ref().child("users").child(uid).child("incoming").child(anonInUsersList[x] + "IncNotify").on("value", function(snapshot)
+		{
+			var yo = snapshot.val();
+				if(yo!=null)
+				{
+					//console.log("Set listener on "  + source+listOfUsers[i] + "notify");
+					yo = yo.split("*@*");
+					if(yo[0] == "notRead")
+					{
+						createNoty("Message from anonymous user " + yo[2] +":- " + yo[1], 'danger');
+					    $('.page-alert .close').click(function(e) {
+					        e.preventDefault();
+					        $(this).closest('.page-alert').slideUp();
+					    });
+					    window.setTimeout(function() {
+					    $(".alert").fadeTo(500, 0).slideUp(500, function(){
+					        $(this).remove(); 
+					    });
+					}, 3000);
+					    //yo[0] = "read";
+					    //notify.set(" ");
+					}
+
+				}
+
+		})
+
+	}
+}
+
+function getOutgoing()
+{
+	
+	ref.once("value", function(snapshot)
+	{
+		data = snapshot.val();
+		console.log(data);
+		return(data);
+	})
+}
+
+function setAnonOuListeners()
+{
+	console.log("Setting anon Ou listeners");
+
+	var ref = firebase.database().ref().child("users").child(uid).child("outgoing");
+	console.log("UID is " + uid);
+	var users = null;
+	ref.once("value", function(snapshot)
+	{
+		users = snapshot.val();
+		for (var x in users)
+	{
+		console.log("Ou listener for "+ x + ">>  " + users[x]);
+		firebase.database().ref().child("users").child(x).child("incoming").child(users[x] + "OuNotify").on("value", function(snapshot)
+		{
+			var yo = snapshot.val();
+				if(yo!=null)
+				{
+					//console.log("Set listener on "  + source+listOfUsers[i] + "notify");
+					yo = yo.split("*@*");
+					if(yo[0] == "notRead")
+					{
+						createNoty(yo[2] + " has replied to your anonymous msg " +":- " + yo[1], 'success');
+					    $('.page-alert .close').click(function(e) {
+					        e.preventDefault();
+					        $(this).closest('.page-alert').slideUp();
+					    });
+					    window.setTimeout(function() {
+					    $(".alert").fadeTo(500, 0).slideUp(500, function(){
+					        $(this).remove(); 
+					    });
+					}, 3000);
+					    //yo[0] = "read";
+					    //notify.set(" ");
+					}
+
+				}
+		})
+	}
+
+	})
+	//console.log(users);
+	
 }

@@ -146,13 +146,13 @@ body {
 }
 #topmenu span.chats{
 	background-position:-95px 25px; cursor:pointer;
-	background: url("https://cdn0.iconfinder.com/data/icons/arrows-11/100/arrow-2-512.png") 50% no-repeat;
+	background: url("https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Red_Arrow_Down.svg/2000px-Red_Arrow_Down.svg.png") 50% no-repeat;
 	background-size: 37px;
 }
 /*#topmenu span.chats:hover{background-position:-95px -46px; cursor:pointer;}*/
 #topmenu span.history{	
 	background-position:-190px 24px; cursor:pointer;
-	background: url("https://www.shareicon.net/data/512x512/2015/11/07/668269_arrows_512x512.png") 50% no-repeat;
+	background: url("https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Green_Arrow_Up.svg/2000px-Green_Arrow_Up.svg.png") 50% no-repeat;
 	background-size: 40px;
 }
 /*#topmenu span.history:hover{background-position:-190px -47px; cursor:pointer;}*/
