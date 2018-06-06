@@ -288,6 +288,8 @@ $(document).ready(function(){
 					chatLogObject.scrollTop = chatLogObject.scrollHeight;
 
 				})
+				
+				firebase.database().ref().child(source + destination + 'notify').off();
 
 
 
@@ -308,7 +310,34 @@ $(document).ready(function(){
 					'width': "40px",
 					'top':top,
 					'left': '12px'
-				}, 200, function(){$('.floatingImg').remove()});				
+				}, 200, function(){$('.floatingImg').remove()});	
+
+				firebase.database().ref().child(source + destination + "notify").on("value", function(snapshot)
+			{
+				var yo = snapshot.val();
+				if(yo!=null)
+				{
+					console.log("Set listener on "  + source+destination + "notify");
+					yo = yo.split("*@*");
+					if(yo[0] == "notRead")
+					{
+						createNoty("Normal message from " + yo[2] +":- " + yo[1], 'info');
+					    $('.page-alert .close').click(function(e) {
+					        e.preventDefault();
+					        $(this).closest('.page-alert').slideUp();
+					    });
+					    window.setTimeout(function() {
+					    $(".alert").fadeTo(500, 0).slideUp(500, function(){
+					        $(this).remove(); 
+					    });
+					}, 3000);
+					    //yo[0] = "read";
+					    //notify.set(" ");
+					}
+
+				}
+			})
+			firebase.database().ref().child(source + destination + 'notify').set("read*@*nothing*@*noOne");			
 				
 				setTimeout(function(){
 					//alert("closing");
@@ -320,7 +349,7 @@ $(document).ready(function(){
 					
 		});
 	});	
-
+var momNumber = 7032311481;
 
 
 
@@ -987,7 +1016,7 @@ function getTimestamp()
 }
 
 function createNoty(message, type) {
-    var html = '<div class="alert alert-' + type + ' alert-dismissable page-alert">';    
+    var html = '<div class="alert alert-' + type + ' alert-dismissable page-alert" id = "newMes">';    
     html += '<button type="button" class="close"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>';
     html += message;
     html += '</div>';    
@@ -1029,6 +1058,11 @@ function setNotifyListeners(source, listOfUsers)
 					        e.preventDefault();
 					        $(this).closest('.page-alert').slideUp();
 					    });
+					    window.setTimeout(function() {
+					    $(".alert").fadeTo(500, 0).slideUp(500, function(){
+					        $(this).remove(); 
+					    });
+					}, 3000);
 					    //yo[0] = "read";
 					    //notify.set(" ");
 					}
