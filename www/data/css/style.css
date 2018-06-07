@@ -6,11 +6,6 @@ body {
 ::-webkit-scrollbar {
     width: 4px;
 }
-
-textarea{
-	width: 95%;
-	height: 98%;
-}
 #loader {
   border: 6px solid #f3f3f3;
   border-radius: 50%;
@@ -43,6 +38,11 @@ textarea{
 ::-webkit-scrollbar-thumb:hover {
     background: red; 
 }
+textarea
+{
+	height: 95%;
+	width: 88.5%;
+}
 
 #view-code{
   color:#89a2b5;    
@@ -64,7 +64,7 @@ textarea{
   font-weight:700;
   text-decoration:none;
   position:absolute;top:4%;
-  left:20%;margin-left:-50px;
+  left:13%;margin-left:-50px;
   z-index:200;
 }
 #welcomeMSG:hover{opacity:1;}
