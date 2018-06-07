@@ -110,7 +110,7 @@ $(document).ready(function(){
 				{
 					var username = incoming_user;
 					anonInUsersList.push(username);
-					var rollNo = "";
+					var rollNo = "😈";
 					var div = document.createElement("div");
 					div.className = "friend";
 					div.setAttribute("id", username);
@@ -484,6 +484,8 @@ $("#friends1").each(function()
 					tempref1.off();
 					window.anonInRef = null;
 					window.anonInTempRef = null;
+					console.log("Closing " + name);
+					firebase.database().ref().child("users").child(uid).child("incoming").child(name + "IncNotify").set("read*@*nothing*@*");
 					$('#chatview').fadeOut();					
 					$('#friendslist').fadeIn();				
 				}, 50);
@@ -571,8 +573,8 @@ $("#friends1").each(function()
 						window.anonDestinationTemp = tempref1;
 						window.anonDestinationIncNotifyRef = firebase.database().ref().child("users").child(useruid).child("incoming").child(destination + "IncNotify");
 						//window.anonDestinationIncNotifyRef.set("jai sriram");
-						window.anonDestinationOuNotifyRef = firebase.database().ref().child("users").child(useruid).child("incoming").child(destination + "Ounotify")
-
+						window.anonDestinationOuNotifyRef = firebase.database().ref().child("users").child(useruid).child("incoming").child(destination + "OuNotify")
+						window.anonDestinationOuNotifyRef.set("read*@*nothing*@*nothing");
 						mesRef.once("value", function(snapshot)
 					{
 					//alert("jai");
@@ -648,6 +650,7 @@ $("#friends1").each(function()
 						//alert("Token added..");
 						destination = "s" + String(nextToken);
 						window.secretDestination = destination;
+						firebase.database().ref().child("users").child(useruid).child("incoming").child(destination + "OuNotify").set("read*@*nothing*@*nothing");
 						
 						mesRef = firebase.database().ref().child("users").child(useruid).child("incoming").child(destination);
 						mesRef.set("0:1830:No messages have been sent!***");
@@ -1178,4 +1181,13 @@ function setAnonOuListeners()
 	})
 	//console.log(users);
 	
+}
+function makeid() {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (var i = 0; i < 5; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
 }
