@@ -27,7 +27,7 @@ firebase.auth().onAuthStateChanged(firebaseUser=>{
 	if(firebaseUser)
 	{
 		console.log(firebaseUser);
-		window.open('mainIndex.html');
+		window.open('mainIndex.html', "_self");
 	}
 	else{
 		console.log("Incorrect credentials...");
